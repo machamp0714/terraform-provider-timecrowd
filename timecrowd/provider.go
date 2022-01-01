@@ -17,8 +17,10 @@ func Provider() *schema.Provider {
 				DefaultFunc: schema.EnvDefaultFunc("TIMECROWD_ACCESS_TOKEN", nil),
 			},
 		},
-		ResourcesMap:         map[string]*schema.Resource{},
-		DataSourcesMap:       map[string]*schema.Resource{},
+		ResourcesMap: map[string]*schema.Resource{},
+		DataSourcesMap: map[string]*schema.Resource{
+			"timecrowd_team": dataSourceTeam(),
+		},
 		ConfigureContextFunc: providerConfigure,
 	}
 }
