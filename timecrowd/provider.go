@@ -2,6 +2,7 @@ package timecrowd
 
 import (
 	"context"
+	"terraform-provider-timecrowd/timecrowd_client"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -27,10 +28,10 @@ func Provider() *schema.Provider {
 
 func providerConfigure(ctc context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	token := d.Get("token").(string)
+	client, err := timecrowd_client.NewClient(&token)
+	if err != nil {
+		return nil, diag.FromErr(err)
+	}
 
-	var diags diag.Diagnostics
-
-	return &Config{
-		token,
-	}, diags
+	return client, nil
 }
