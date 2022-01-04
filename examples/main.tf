@@ -2,18 +2,18 @@ terraform {
   required_providers {
     timecrowd = {
       version = "0.1"
-      source  = "hashicorp.com/edu/timecrowd"
+      source  = "hashicorp.com/machamp/timecrowd"
     }
   }
 }
 
 data "timecrowd_team" "team" {
-  id = 23260
+  id = 1
 }
 
 data "timecrowd_category" "terraform" {
   team_id = data.timecrowd_team.team.id
-  id      = 1713677
+  id      = 1
 }
 
 module "aws_category" {
