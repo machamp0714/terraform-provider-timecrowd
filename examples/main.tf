@@ -11,28 +11,16 @@ data "timecrowd_team" "team" {
   id = 23260
 }
 
-data "timecrowd_category" "category" {
+data "timecrowd_category" "terraform" {
   team_id = data.timecrowd_team.team.id
   id      = 1713677
 }
 
-output "team" {
-  value = data.timecrowd_team.team
-}
+module "aws_category" {
+  source = "./modules/category"
 
-output "category" {
-  value = data.timecrowd_category.category
-}
-
-resource "timecrowd_category" "example" {
-  team_id = data.timecrowd_team.team.id
-
+  team_id   = data.timecrowd_team.team.id
   title     = "aws"
-  color     = 3
-  parent_id = data.timecrowd_category.category.id
-  position  = 0
-}
-
-output "aws_category" {
-  value = timecrowd_category.example
+  parent_id = data.timecrowd_category.terraform.id
+  position  = 1
 }
