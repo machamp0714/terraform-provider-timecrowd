@@ -8,18 +8,19 @@ terraform {
 }
 
 data "timecrowd_team" "team" {
-  id = 21648
+  id = 23260
 }
 
-data "timecrowd_category" "category" {
+data "timecrowd_category" "terraform" {
   team_id = data.timecrowd_team.team.id
-  id      = 44163
+  id      = 1713677
 }
 
-output "team" {
-  value = data.timecrowd_team.team
-}
+module "aws_category" {
+  source = "./modules/category"
 
-output "category" {
-  value = data.timecrowd_category.category
+  team_id   = data.timecrowd_team.team.id
+  title     = "aws"
+  parent_id = data.timecrowd_category.terraform.id
+  position  = 1
 }

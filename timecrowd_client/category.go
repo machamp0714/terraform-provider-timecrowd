@@ -4,17 +4,77 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 type Category struct {
 	Id            int        `json:"id"`
 	Title         string     `json:"title"`
-	Color         int        `json:"color"`
-	AncestryDepth int        `json:"ancestry_depth"`
-	TeamId        int        `json:"team_id"`
-	CreatedAt     string     `json:"created_at"`
-	UpdatedAt     string     `json:"updated_at"`
-	Children      []Category `json:"children"`
+	Color         int        `json:"color,omitempty"`
+	AncestryDepth int        `json:"ancestry_depth,omitempty"`
+	TeamId        int        `json:"team_id,omitempty"`
+	CreatedAt     string     `json:"created_at,omitempty"`
+	UpdatedAt     string     `json:"updated_at,omitempty"`
+	Position      int        `json:"position,omitempty"`
+	ParentId      int        `json:"parent_id,omitempty"`
+	Children      []Category `json:"children,omitempty"`
+}
+
+func (c *Client) CreateCategory(teamId string, params Category) (*Category, error) {
+	p, err := json.Marshal(params)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/api/v1/teams/%s/categories", c.Host, teamId), strings.NewReader(string(p)))
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := c.DoRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var ca Category
+	if err = json.Unmarshal(body, &ca); err != nil {
+		return nil, err
+	}
+	return &ca, nil
+}
+
+func (c *Client) UpdateCategory(teamId, categoryId string, params Category) (*Category, error) {
+	p, err := json.Marshal(params)
+	if err != nil {
+		return nil, err
+	}
+	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/api/v1/teams/%s/categories/%s", c.Host, teamId, categoryId), strings.NewReader(string(p)))
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := c.DoRequest(req)
+
+	ca := Category{}
+	if err = json.Unmarshal(body, &ca); err != nil {
+		return nil, err
+	}
+
+	return &ca, nil
+}
+
+func (c *Client) DeleteCategory(teamId, categoryId string) error {
+	req, err := http.NewRequest("DELETE", fmt.Sprintf("%s/api/v1/teams/%s/categories/%s", c.Host, teamId, categoryId), nil)
+	if err != nil {
+		return err
+	}
+
+	_, err = c.DoRequest(req)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (c *Client) GetCategories(teamId string) (*[]Category, error) {

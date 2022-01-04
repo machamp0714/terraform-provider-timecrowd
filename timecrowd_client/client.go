@@ -25,11 +25,21 @@ func NewClient(token *string) (*Client, error) {
 
 func (c *Client) DoRequest(req *http.Request) ([]byte, error) {
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.Token))
+	req.Header.Set("Content-Type", "application/json")
+
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer res.Body.Close()
+
+	if req.Method == "DELETE" {
+		if res.StatusCode != http.StatusNoContent {
+			return nil, fmt.Errorf("status: %d", res.StatusCode)
+		}
+
+		return nil, nil
+	}
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
