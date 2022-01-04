@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 type Category struct {
@@ -15,6 +16,36 @@ type Category struct {
 	CreatedAt     string     `json:"created_at"`
 	UpdatedAt     string     `json:"updated_at"`
 	Children      []Category `json:"children"`
+}
+
+type CreateCategoryParams struct {
+	Title    string `json:"title"`
+	Color    int    `json:"color,omitempty"`
+	ParentId int    `json:"parent_id,omitempty"`
+	Position int    `json:"position,omitempty"`
+}
+
+func (c *Client) CreateCategory(teamId string, params CreateCategoryParams) (*Category, error) {
+	p, err := json.Marshal(params)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/api/v1/teams/%s/categories", c.Host, teamId), strings.NewReader(string(p)))
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := c.DoRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var ca Category
+	if err = json.Unmarshal(body, &ca); err != nil {
+		return nil, err
+	}
+	return &ca, nil
 }
 
 func (c *Client) GetCategories(teamId string) (*[]Category, error) {

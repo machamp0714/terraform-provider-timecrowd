@@ -25,6 +25,8 @@ func NewClient(token *string) (*Client, error) {
 
 func (c *Client) DoRequest(req *http.Request) ([]byte, error) {
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.Token))
+	req.Header.Set("Content-Type", "application/json")
+
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return nil, err
