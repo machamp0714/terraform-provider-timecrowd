@@ -68,6 +68,20 @@ func (c *Client) UpdateCategory(teamId, categoryId string, params CategoryParams
 	return &ca, nil
 }
 
+func (c *Client) DeleteCategory(teamId, categoryId string) error {
+	req, err := http.NewRequest("DELETE", fmt.Sprintf("%s/api/v1/teams/%s/categories/%s", c.Host, teamId, categoryId), nil)
+	if err != nil {
+		return err
+	}
+
+	_, err = c.DoRequest(req)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (c *Client) GetCategories(teamId string) (*[]Category, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/v1/teams/%s/categories", c.Host, teamId), nil)
 	if err != nil {

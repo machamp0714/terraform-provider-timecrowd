@@ -33,6 +33,14 @@ func (c *Client) DoRequest(req *http.Request) ([]byte, error) {
 	}
 	defer res.Body.Close()
 
+	if req.Method == "DELETE" {
+		if res.StatusCode != http.StatusNoContent {
+			return nil, fmt.Errorf("status: %d", res.StatusCode)
+		}
+
+		return nil, nil
+	}
+
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
