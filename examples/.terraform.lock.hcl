@@ -1,7 +1,7 @@
 # This file is maintained automatically by "terraform init".
 # Manual edits may be lost in future updates.
 
-provider "hashicorp.com/edu/timecrowd" {
+provider "hashicorp.com/machamp/timecrowd" {
   version     = "0.1.0"
   constraints = "0.1.0"
   hashes = [
