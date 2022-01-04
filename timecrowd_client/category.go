@@ -10,22 +10,17 @@ import (
 type Category struct {
 	Id            int        `json:"id"`
 	Title         string     `json:"title"`
-	Color         int        `json:"color"`
-	AncestryDepth int        `json:"ancestry_depth"`
-	TeamId        int        `json:"team_id"`
-	CreatedAt     string     `json:"created_at"`
-	UpdatedAt     string     `json:"updated_at"`
-	Children      []Category `json:"children"`
+	Color         int        `json:"color,omitempty"`
+	AncestryDepth int        `json:"ancestry_depth,omitempty"`
+	TeamId        int        `json:"team_id,omitempty"`
+	CreatedAt     string     `json:"created_at,omitempty"`
+	UpdatedAt     string     `json:"updated_at,omitempty"`
+	Position      int        `json:"position,omitempty"`
+	ParentId      int        `json:"parent_id,omitempty"`
+	Children      []Category `json:"children,omitempty"`
 }
 
-type CategoryParams struct {
-	Title    string `json:"title"`
-	Color    int    `json:"color,omitempty"`
-	ParentId int    `json:"parent_id,omitempty"`
-	Position int    `json:"position,omitempty"`
-}
-
-func (c *Client) CreateCategory(teamId string, params CategoryParams) (*Category, error) {
+func (c *Client) CreateCategory(teamId string, params Category) (*Category, error) {
 	p, err := json.Marshal(params)
 	if err != nil {
 		return nil, err
@@ -48,7 +43,7 @@ func (c *Client) CreateCategory(teamId string, params CategoryParams) (*Category
 	return &ca, nil
 }
 
-func (c *Client) UpdateCategory(teamId, categoryId string, params CategoryParams) (*Category, error) {
+func (c *Client) UpdateCategory(teamId, categoryId string, params Category) (*Category, error) {
 	p, err := json.Marshal(params)
 	if err != nil {
 		return nil, err

@@ -58,7 +58,7 @@ func resourceCategoryCreate(ctx context.Context, d *schema.ResourceData, m inter
 	var diags diag.Diagnostics
 
 	teamId := d.Get("team_id").(int)
-	params := tc.CategoryParams{
+	params := tc.Category{
 		Title:    d.Get("title").(string),
 		Color:    d.Get("color").(int),
 		ParentId: d.Get("parent_id").(int),
@@ -96,6 +96,8 @@ func resourceCategoryRead(ctx context.Context, d *schema.ResourceData, m interfa
 	d.Set("ancestry_depth", ca.AncestryDepth)
 	d.Set("created_at", ca.CreatedAt)
 	d.Set("updated_at", ca.UpdatedAt)
+	d.Set("position", ca.Position)
+	d.Set("parent_id", ca.ParentId)
 	d.SetId(categoryId)
 
 	return diags
