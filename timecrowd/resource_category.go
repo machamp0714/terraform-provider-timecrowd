@@ -96,17 +96,30 @@ func resourceCategoryRead(ctx context.Context, d *schema.ResourceData, m interfa
 	d.Set("ancestry_depth", ca.AncestryDepth)
 	d.Set("created_at", ca.CreatedAt)
 	d.Set("updated_at", ca.UpdatedAt)
-	d.Set("position", ca.Position)
-	d.Set("parent_id", ca.ParentId)
 	d.SetId(categoryId)
 
 	return diags
 }
 
 func resourceCategoryUpdtae(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
+	c := m.(*tc.Client)
 
-	return diags
+	if d.HasChanges("title", "color", "parent_id", "position") {
+		teamId := strconv.Itoa(d.Get("team_id").(int))
+		categoryId := d.Id()
+		params := tc.Category{
+			Title:    d.Get("title").(string),
+			Color:    d.Get("color").(int),
+			ParentId: d.Get("parent_id").(int),
+			Position: d.Get("position").(int),
+		}
+		_, err := c.UpdateCategory(teamId, categoryId, params)
+		if err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	return resourceCategoryRead(ctx, d, m)
 }
 
 func resourceCategoryDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
