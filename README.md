@@ -19,6 +19,10 @@ terraform {
   }
 }
 
+provider "timecrowd" {
+  token = <TIMECROWD_ACCESS_TOKEN>
+}
+
 data "timecrowd_team" "team" {
   id = 1
 }
