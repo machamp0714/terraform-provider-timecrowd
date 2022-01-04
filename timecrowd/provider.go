@@ -20,7 +20,8 @@ func Provider() *schema.Provider {
 		},
 		ResourcesMap: map[string]*schema.Resource{},
 		DataSourcesMap: map[string]*schema.Resource{
-			"timecrowd_team": dataSourceTeam(),
+			"timecrowd_team":     dataSourceTeam(),
+			"timecrowd_category": dataSourceCategory(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
