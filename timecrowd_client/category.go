@@ -18,14 +18,14 @@ type Category struct {
 	Children      []Category `json:"children"`
 }
 
-type CreateCategoryParams struct {
+type CategoryParams struct {
 	Title    string `json:"title"`
 	Color    int    `json:"color,omitempty"`
 	ParentId int    `json:"parent_id,omitempty"`
 	Position int    `json:"position,omitempty"`
 }
 
-func (c *Client) CreateCategory(teamId string, params CreateCategoryParams) (*Category, error) {
+func (c *Client) CreateCategory(teamId string, params CategoryParams) (*Category, error) {
 	p, err := json.Marshal(params)
 	if err != nil {
 		return nil, err
@@ -45,6 +45,26 @@ func (c *Client) CreateCategory(teamId string, params CreateCategoryParams) (*Ca
 	if err = json.Unmarshal(body, &ca); err != nil {
 		return nil, err
 	}
+	return &ca, nil
+}
+
+func (c *Client) UpdateCategory(teamId, categoryId string, params CategoryParams) (*Category, error) {
+	p, err := json.Marshal(params)
+	if err != nil {
+		return nil, err
+	}
+	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/api/v1/teams/%s/categories/%s", c.Host, teamId, categoryId), strings.NewReader(string(p)))
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := c.DoRequest(req)
+
+	ca := Category{}
+	if err = json.Unmarshal(body, &ca); err != nil {
+		return nil, err
+	}
+
 	return &ca, nil
 }
 
