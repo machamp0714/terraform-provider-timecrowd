@@ -123,7 +123,19 @@ func resourceCategoryUpdtae(ctx context.Context, d *schema.ResourceData, m inter
 }
 
 func resourceCategoryDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	c := m.(*tc.Client)
+
 	var diags diag.Diagnostics
+
+	categoryId := d.Id()
+	teamId := strconv.Itoa(d.Get("team_id").(int))
+
+	err := c.DeleteCategory(teamId, categoryId)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	d.SetId("")
 
 	return diags
 }
